@@ -17,11 +17,13 @@
 %define        bind_dir          /var/named
 %define        chroot_prefix     %{bind_dir}/chroot
 #
+%define pirabbix_rel prl6
+%define pirabbix_rel_ver 1
 Summary:  The Berkeley Internet Name Domain (BIND) DNS (Domain Name System) server
 Name:     bind
 License:  ISC
 Version:  9.8.2
-Release:  0.68.%{PREVER}%{?dist}.1
+Release:  0.68.%{PREVER}.%{pirabbix_rel}.%{pirabbix_rel_ver}
 Epoch:    32
 Url:      http://www.isc.org/products/BIND/
 Buildroot:%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -167,6 +169,8 @@ Patch73: bind-9.5-libidn.patch
 Patch83: bind-9.5-libidn2.patch
 Patch85: bind-9.5-libidn3.patch
 Patch94: bind95-rh461409.patch
+# prb patches
+Patch9999: CVE-2018-5743.patch
 
 #
 Requires:       bind-libs = %{epoch}:%{version}-%{release}
@@ -430,6 +434,8 @@ mkdir m4
 %patch149 -p1 -b .rh927914
 %patch155 -p1 -b .nxdomain_segfault
 %patch157 -p1 -b .r_option
+
+%patch9999 -p1 -b .CVE-2018-5743
 
 # Sparc and s390 arches need to use -fPIE
 %ifarch sparcv9 sparc64 s390 s390x
@@ -881,6 +887,11 @@ rm -rf ${RPM_BUILD_ROOT}
 %endif
 
 %changelog
+* Sun May 12 2019 shintaro fujiwara <shintaro.fujiwara@gmail.com> - 9.8.2-0.68.rc1.prl6.1
+- First version for Pink Rabbit Linux 6
+- https://sourceforge.net/projects/pinkrabbitlinux/
+- Fix CVE-2018-5743
+
 * Thu Aug 09 2018 Petr Menšík <pemensik@redhat.com> - 32:9.8.2-0.68.rc1.1
 - Fix CVE-2018-5740
 
